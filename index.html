@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   <title>Giphy API Hw</title>
+   <link rel="stylesheet" type="text/css" href="./style.css
+   ">
+   <style>
+      body {
+         background-color: #e2e2e2;
+      }
+
+      header {
+         text-align: center;
+         background-color: #0967bd;
+         padding: 10px;
+         color: #ffffff;
+      }
+
+      .container {
+         width: 90%;
+         margin: auto;
+         padding: 10px;
+         background-color: #f4f4f4
+      }
+   </style>
+
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+
+<body>
+   <header>
+      <h1 id="header">Giphy API Homework</h1>
+
+   </header>
+
+   <body>
+      <div class="container">
+         <!-- Buttons will go in here -->
+         <h3>MOVIE GIFs</h3>
+         <p>
+            Click each gif to pause them!
+         </p>
+         <div id="buttons">
+         </div>
+
+         <form id="search">
+            <input id="getItem" Type="text" placeholder="Look for a gif" />
+            <!-- This is the submit button -->
+            <input type="submit" id="addGif" value="Search for Gif">
+         </form>
+         <br />
+         <div id="displayGifs">
+         </div>
+
+      </div>
+
+      <script>
+         $(document).ready(function() {
+
+            // Initial array of Gifs
+            var myArr = ["The Matrix", "The Notebook", "Mr. Nobody", "The Lion King"];
+            // ===========================================
+            // Generic function for capturing the movie name from the data-attribute
+            function displayGifs() {
+               //Clear the container
+               $("#displayGifs").empty();
+               //Do the API call:
+               //1. create the API url in a var
+               var search = $(this).attr("data-name");
+               console.log(search);
+
+               var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=Wr9Rgoj44Pz041jqX9ApxblhhINwGRFi&q=" + search + "&limit=10&offset=0&rating=G&lang=en";
+               console.log(queryURL);
+               //===================
+               //2. Make the ajax call
+               $.ajax({
+                  url: queryURL,
+                  method: "GET"
+                  // .done(function(response) {
+                  // CODE GOES HERE
+                  // });
+                  //3. On promise ".done", populate the populate the displayGifs div
+               }).done(function(response) {
+                  console.log(response);
+                  console.log(response.data[3]);
+
+                  //WE ARE GOING TO NEED A FOR LOOP HERE BUDDY BOI
+                  for (var j = 0; j < response.data.length; j++) {
+                     var gifDiv = $("<div>").addClass("gifs");
+                     var rating = $("<p>").text("Image Rating: " + response.data[j].rating);
+
+                  //IMPORTANT: when creating the gif image souce. Make sure to add the attributes of data-still, data-animate and data state for use later on the if loop to stop them on click.
+                     var gif = $("<img>").attr("src", response.data[j].images.original.url).attr("data-still", response.data[j].images.original_still.url).attr("data-animate", response.data[j].images.original.url).attr("data-state", "animate").addClass("gifs");
+
+                     $(gifDiv).append(gif);
+                     $(gifDiv).append(rating);
+                     console.log(gif);
+
+                     $("#displayGifs").append(gifDiv);
+                  } //for loop end
+
+                  $(".gifs").on("click", function() {
+
+                     var state = $(this).attr("data-state");
+
+                     if (state === "animate"){
+                        $(this).attr("src", $(this).attr("data-still"));
+                        $(this).attr("data-state","still");
+                     }
+                    // STEP THREE: Check if the variable state is equal to 'still',
+                    // then update the src attribute of this image to it's data-animate value,
+                    // and update the data-state attribute to 'animate'.
+                     else if (state === "still"){
+                        $(this).attr("src", $(this).attr("data-animate"));
+                        $(this).attr("data-state","animate");
+                     };
+
+
+                  }); //end on click function
+
+
+               }); //on promise function end
+               // ===================
+               //NOTE Left to do:
+               // display all 10 gifs at once (for loop), size them correctly, mouseover functions, style this page.
+
+            }
+
+            function renderButtons() {
+
+               $("#buttons").empty();
+               // Erase the placeholder after each add
+
+               // Looping through the array of movies
+               for (var i = 0; i < myArr.length; i++) {
+
+                  // Then dynamicaly generating buttons for each movie in the array
+                  // This code $("<button>") is all jQuery needs to create the beginning and end tag. (<button></button>)
+                  var a = $("<button>");
+                  // Adding a class
+                  a.addClass("gifBtn");
+                  // Added a data-attribute
+                  a.attr("data-name", myArr[i]);
+                  // Provided the initial button text
+                  a.text(myArr[i]);
+                  // Added the button to the HTML
+                  $("#buttons").append(a);
+               }
+            }
+
+            // This function handles events where one button is clicked
+            $("#addGif").on("click", function(event) {
+               event.preventDefault();
+
+               // This line grabs the input(value) from the textbox and assigns it into a variable
+               var newItem = $("#getItem").val().trim();
+
+               // The input from the textbox is then added to our array
+               myArr.push(newItem);
+
+               // Calling renderButtons which handles the processing of our movie array
+               renderButtons();
+            });
+
+            // Function for displaying the movie info
+            // We're adding a click event listener to all elements with the class "movie"
+            // We're adding the event listener to the document itself because it will
+            // work for dynamically generated elements
+            // $(".movies").on("click") will only add listeners to elements that are on the page at that time
+            $(document).on("click", ".gifBtn", displayGifs);
+
+            // Calling the renderButtons function to display the intial buttons
+            renderButtons();
+
+         });
+      </script>
+   </body>
+
+</html>
