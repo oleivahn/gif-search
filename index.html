@@ -40,7 +40,11 @@
    <body>
       <div class="container">
          <!-- Buttons will go in here -->
-         <h3>MOVIE GIFs</h3>
+         <h3>Soccer is LIFE!</h3>
+
+         <p>
+            <b>Search for new Gifs to add to the page</b>
+         </p>
          <p>
             Click each gif to pause them!
          </p>
@@ -62,7 +66,7 @@
          $(document).ready(function() {
 
             // Initial array of Gifs
-            var myArr = ["The Matrix", "The Notebook", "Mr. Nobody", "The Lion King"];
+            var myArr = ["Zizou", "Real Madrid", "CR7", "Messi", "Marcelo"];
             // ===========================================
             // Generic function for capturing the movie name from the data-attribute
             function displayGifs() {
@@ -93,8 +97,9 @@
                      var gifDiv = $("<div>").addClass("gifs");
                      var rating = $("<p>").text("Image Rating: " + response.data[j].rating);
 
-                  //IMPORTANT: when creating the gif image souce. Make sure to add the attributes of data-still, data-animate and data state for use later on the if loop to stop them on click.
-                     var gif = $("<img>").attr("src", response.data[j].images.original.url).attr("data-still", response.data[j].images.original_still.url).attr("data-animate", response.data[j].images.original.url).attr("data-state", "animate").addClass("gifs");
+                     //IMPORTANT: when creating the gif image souce. Make sure to add the attributes of data-still, data-animate and data state for use later on the if loop to stop them on click.
+                     var gif = $("<img>").attr("src", response.data[j].images.original.url).attr("data-still", response.data[j].images.original_still.url).attr("data-animate", response.data[j].images.original.url).attr("data-state",
+                        "animate").addClass("gifs");
 
                      $(gifDiv).append(gif);
                      $(gifDiv).append(rating);
@@ -107,16 +112,16 @@
 
                      var state = $(this).attr("data-state");
 
-                     if (state === "animate"){
+                     if (state === "animate") {
                         $(this).attr("src", $(this).attr("data-still"));
-                        $(this).attr("data-state","still");
+                        $(this).attr("data-state", "still");
                      }
-                    // STEP THREE: Check if the variable state is equal to 'still',
-                    // then update the src attribute of this image to it's data-animate value,
-                    // and update the data-state attribute to 'animate'.
-                     else if (state === "still"){
+                     // STEP THREE: Check if the variable state is equal to 'still',
+                     // then update the src attribute of this image to it's data-animate value,
+                     // and update the data-state attribute to 'animate'.
+                     else if (state === "still") {
                         $(this).attr("src", $(this).attr("data-animate"));
-                        $(this).attr("data-state","animate");
+                        $(this).attr("data-state", "animate");
                      };
 
 
